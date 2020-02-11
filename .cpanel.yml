@@ -3,3 +3,4 @@
                 tasks:
                         - export DEPLOYPATH=/home/sparked8/public_html/test
                         - /bin/cp * $DEPLOYPATH
+                        
