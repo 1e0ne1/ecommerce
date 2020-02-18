@@ -55,13 +55,17 @@
     function cart(){
         $total_amount=0;
         $item_quantity=0;
+        $item_name = 1;
+        $item_number = 1;
+        $item_amount = 1;
+        $item_quantity_form = 1;
 
         foreach($_SESSION as $name => $value){
             if($value > 0){
                 if(substr($name, 0, 7) == "product"){
                     $query = query("SELECT * FROM products WHERE product_id = " . escape_string(substr($name, 8, strlen($name) - 8)));
                     confirm($query);
-    
+                    
                     while($row = fetch_array($query)){
                         $sub = $row['product_price'] * $value;
                         $product = <<<DELIMETER
@@ -87,11 +91,19 @@
                                 </a>
                             </td>
                         </tr>
+                        <input type="hidden" name="item_name_{$item_name}" value="{$row['product_title']}">
+                        <input type="hidden" name="item_number_{$item_number}" value="{$row['product_id']}">
+                        <input type="hidden" name="amount_{$item_amount}" value="{$row['product_price']}">
+                        <input type="hidden" name="quantity_{$item_quantity_form}" value="{$value}">
     
                         DELIMETER;
                         $_SESSION['total_amnt'] = $total_amount += $sub;
                         $_SESSION['item_qty'] = $item_quantity += $value;
                         echo $product;
+                        $item_name += 1;
+                        $item_number += 1;
+                        $item_amount += 1;
+                        $item_quantity_form += 1;
                     }
                 }
             }
