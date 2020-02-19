@@ -75,7 +75,7 @@
                         <h4><a href="item.php?id={$row['product_id']}">{$row['product_title']}</a>
                         </h4>
                         <p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
-                        <a class="btn btn-primary" href="cart.php?add={$row['product_id']}">Add to Cart</a>
+                        <a class="btn btn-primary" href="../resources/cart.php?add={$row['product_id']}">Add to Cart</a>
                     </div>
                 </div>
             </div>
@@ -110,7 +110,12 @@
                         <h3>{$row['product_title']}</h3>
                         <p>{$row['product_short_description']}</p>
                         <p>
-                            <a href="#" class="btn btn-primary">Buy Now!</a> <a href="item.php?id={$row['product_id']}" class="btn btn-default">More Info</a>
+                            <a href="#" class="btn btn-primary">
+                                Buy Now!
+                            </a> 
+                            <a href="item.php?id={$row['product_id']}" class="btn btn-default">
+                                More Info
+                            </a>
                         </p>
                     </div>
                 </div>
@@ -133,7 +138,12 @@
                         <h3>{$row['product_title']}</h3>
                         <p>{$row['product_short_description']}</p>
                         <p>
-                            <a href="#" class="btn btn-primary">Buy Now!</a> <a href="item.php?id={$row['product_id']}" class="btn btn-default">More Info</a>
+                            <a href="#" class="btn btn-primary">
+                                Buy Now!
+                            </a> 
+                            <a href="item.php?id={$row['product_id']}" class="btn btn-default">
+                                More Info
+                            </a>
                         </p>
                     </div>
                 </div>
@@ -157,6 +167,7 @@
                 set_message("Your password or username are wrong!");
                 redirect("login.php");
             } else {
+                $_SESSION['username'] = $username;
                 // set_message("Welcome to admin");
                 redirect("admin");
             }
@@ -175,5 +186,7 @@
             
         }
     }
+
+
 
 ?>

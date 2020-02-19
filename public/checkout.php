@@ -1,7 +1,5 @@
 <?php  require_once ("../resources/config.php"); ?>
 
-<?php  require_once ("cart.php"); ?>
-
 <?php include(TEMPLATE_FRONT . DS ."header.php"); ?>
 
 
@@ -16,7 +14,7 @@
       <h1>Checkout</h1>
 
 
-<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+<form action="" method="post">
   <input type="hidden" name="cmd" value="_cart">
   <input type="hidden" name="business" value="business@sparkedtec.com">
     <table class="table table-striped">
@@ -31,12 +29,15 @@
         </thead>
         <tbody>
             <?php cart(); ?>
+
+            
         </tbody>
+        
     </table>
-    <input type="image" name="upload"
-    src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif"
-    alt="PayPal - The safer, easier way to pay online">
+    
 </form>
+
+
 
 
 
@@ -65,10 +66,20 @@
 </span></strong> </td>
 </tr>
 
-
-</tbody>
+  </tbody>
 
 </table>
+<?php 
+    if(isset($_SESSION['total_amnt'])){
+        echo '<div id="paypal-button-container"></div>';
+    }
+?>
+
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AW6CZWcfpnfPnZlIEcRG86otCxAzTPijmRI_EsPZtj6GYQtpiOd0bz3FOkSRQ9Tz7NIopiVldqHIjofx"></script>
+    <?php js_paypal(); ?>
+    <!-- paypal script -->
 
 </div><!-- CART TOTALS-->
 

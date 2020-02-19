@@ -55,7 +55,7 @@
    
     <form action="">
         <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="ADD TO CART">
+            <a class="btn btn-primary" href="../resources/cart.php?add=<?php echo $row['product_id']; ?>">Add to Cart</a>
         </div>
     </form>
 
