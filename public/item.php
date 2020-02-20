@@ -13,7 +13,11 @@
         $query = query("SELECT * FROM products WHERE product_id = ".escape_string($_GET['id'])."");
         confirm($query);
         while($row = fetch_array($query)):
-            
+            if(substr($row['product_image'],0,4) != "http"){
+                $image = "../resources/uploads/" . $row['product_image'];
+            } else {
+                $image = $row['product_image'];
+            }
             
     ?>
 
@@ -24,7 +28,7 @@
 <div class="row">
 
     <div class="col-md-7">
-       <img class="img-responsive" src="<?php echo $row['product_image'];?>" alt="">
+       <img class="img-responsive" src="<?php echo $image;?>" alt="">
 
     </div>
 
