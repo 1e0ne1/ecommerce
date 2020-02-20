@@ -114,10 +114,15 @@
         $query = query("SELECT * FROM products WHERE product_category_id = ".$id);
         confirm($query);
         while($row = fetch_array($query)) {
+            if(substr($row['product_image'],0,4) != "http"){
+                $image = "../resources/uploads/" . $row['product_image'];
+            } else {
+                $image = $row['product_image'];
+            }
             $categories_product = <<<DELIMITER
             <div class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
-                    <img src="{$row['product_image']}" alt="">
+                    <img src="{$image}" alt="">
                     <div class="h-auto">
                         <h3>{$row['product_title']}</h3>
                         <p>{$row['product_short_description']}</p>
