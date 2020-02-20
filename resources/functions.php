@@ -42,6 +42,13 @@
         }
     }
 
+    function return_id($result){
+        
+        global $connection;
+
+        return mysqli_insert_id($connection);
+    }
+
 
     function escape_string($string){
         
@@ -185,6 +192,106 @@
 
             
         }
+    }
+
+    function get_orders(){
+        $query = query("SELECT * FROM orders");
+        confirm($query);
+        while($row = fetch_array($query)) {
+            echo <<<DELIMETER
+            <tr>
+                <td>{$row['order_id']}</td>
+                <td>{$row['order_amount']}</td>
+                <td>{$row['order_transaction']}</td>
+                <td>{$row['order_status']}</td>
+                <td>{$row['order_date']}</td>
+                <td>{$row['payer_email']}</td>
+                <td>{$row['invoice_number']}</td>
+                <!---<td>
+                    <a class='btn btn-danger' href="../../resources/back/delete_order.php">
+                        <span class="glyphicon glyphicon-remove">
+                    </span>
+                    </a>
+                </td> -->
+            </tr>
+
+            DELIMETER;
+        }
+    }
+
+    function get_admin_products(){
+        $query = query("SELECT * FROM products");
+        confirm($query);
+        while($row = fetch_array($query)) {
+            if(substr($row['product_image'],0,4) != "http"){
+                $image = "../../resources/uploads/" . $row['product_image'];
+            } else {
+                $image = $row['product_image'];
+            }
+            
+            echo <<<DELIMETER
+            <tr>
+                <td>{$row['product_id']}</td>
+                <td>{$row['product_title']}</td>
+                <td>{$row['product_category_id']}</td>
+                <td>{$row['product_price']}</td>
+                <td>{$row['product_quantity']}</td>
+                <td><img src="{$image}" style="width=auto; height: 50px;"></td>
+                <td>
+                    <a class='btn btn-warning' href="?edit_product&id={$row['product_id']}">
+                        <span class="glyphicon glyphicon-pencil">
+                    </span>
+                    </a>
+                    <a class='btn btn-danger' href="../../resources/templates/back/delete_products.php?id={$row['product_id']}">
+                        <span class="glyphicon glyphicon-remove">
+                    </span>
+                    </a>
+                </td>
+            </tr>
+
+            DELIMETER;
+        }
+    }
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ADD PRODUCTS IN ADMIN++++++++++++++++++++++++++++++++++++++++++++++
+
+    function add_admin_products(){
+        if(isset($_POST['publish'])){
+            $product_title              = escape_string($_POST['product_title']);
+            $product_category_id        = escape_string($_POST['product_category_id']);
+            $product_price              = escape_string($_POST['product_price']);
+            $product_description        = escape_string($_POST['product_description']);
+            $product_short_description  = escape_string($_POST['product_short_description']);
+            $product_quantity           = escape_string($_POST['product_quantity']);
+            $product_image              = $_FILES['file']['name'];
+            $image_temp_location        = $_FILES['file']['tmp_name'];
+
+            move_uploaded_file($image_temp_location, UPLOAD_DIRECTORY . DS . $product_image);
+            
+            $query = query("INSERT INTO 
+                products (
+                    product_title,
+                    product_category_id,
+                    product_price,
+                    product_short_description,
+                    product_description,
+                    product_quantity,
+                    product_image
+                ) VALUES (
+                    '{$product_title}',
+                    {$product_category_id},
+                    {$product_price},
+                    '{$product_short_description}',
+                    '{$product_description}',
+                    {$product_quantity},
+                    '{$product_image}'
+                )");
+            confirm($query);
+            $id = return_id($query);
+            set_message("New Product with id {$id} was added");
+            redirect("index.php?products");
+        }
+
     }
 
 

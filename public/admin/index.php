@@ -61,6 +61,11 @@
                         $flag = 1;
                     }
 
+                    if(isset($_GET['edit_product'])){
+                        include(TEMPLATE_BACK . DS ."edit_product.php");
+                        $flag = 1;
+                    }
+
                     if($flag==0){
                         include(TEMPLATE_BACK . DS ."admin_content.php");
                     }

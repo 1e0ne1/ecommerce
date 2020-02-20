@@ -182,17 +182,23 @@
                 },
                 onApprove: function(data, actions) {
                     return actions.order.capture().then(function(details) {
-                        alert('Transaction completed by ' + details.payer.name.given_name);
-                        // Call your server to save the transaction
-                        return fetch('/api/paypal-transaction-complete', {
-                            method: 'post',
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                orderID: data.orderID
-                            })
+                        $.ajax({
+                            type: "POST",
+                            url: "order.php",
+                            data: "status=" + details.purchase_units[0].payments.captures[0].status + 
+                                    "&transaction_id=" + details.purchase_units[0].payments.captures[0].id + 
+                                    "&email_address=" + details.payer.email_address,
+                                success: function(result) {
+                                    if(result == 0){
+                                        alert("Something went wrong. Please try again.");
+                                    } else {
+                                        window.location.assign("thank_you.php?order_id=" + result);
+                                    }
+                                }
                         });
+                        //console.log(details.purchase_units[0].payments.captures[0].status);
+                        //console.log(details.purchase_units[0].payments.captures[0].id);
+                        //console.log(details.payer.email_address);
                     });
                 }
             }).render('#paypal-button-container');
