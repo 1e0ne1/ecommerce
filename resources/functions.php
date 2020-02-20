@@ -73,10 +73,15 @@
         $query = query("SELECT * FROM products");
         confirm($query);
         while($row = fetch_array($query)){
+            if(substr($row['product_image'],0,4) != "http"){
+                $image = "../resources/uploads/" . $row['product_image'];
+            } else {
+                $image = $row['product_image'];
+            }
             $product = <<<DELIMITER
             <div class="col-sm-4 col-lg-4 col-md-4">
                 <div class="thumbnail">
-                    <a href="item.php?id={$row['product_id']}"><img src="{$row['product_image']}" alt=""></a>
+                    <a href="item.php?id={$row['product_id']}"><img src="{$image}" alt=""  style="max-height: 120px; width: auto;"></a>
                     <div class="caption">
                         <h4 class="pull-right">\${$row['product_price']}</h4>
                         <h4><a href="item.php?id={$row['product_id']}">{$row['product_title']}</a>
@@ -220,7 +225,7 @@
     }
 
     function get_admin_products(){
-        $query = query("SELECT * FROM products");
+        $query = query("SELECT a.*, b.cat_title FROM products a inner join categories b on a.product_category_id = b.cat_id");
         confirm($query);
         while($row = fetch_array($query)) {
             if(substr($row['product_image'],0,4) != "http"){
@@ -233,7 +238,7 @@
             <tr>
                 <td>{$row['product_id']}</td>
                 <td>{$row['product_title']}</td>
-                <td>{$row['product_category_id']}</td>
+                <td>{$row['cat_title']}</td>
                 <td>{$row['product_price']}</td>
                 <td>{$row['product_quantity']}</td>
                 <td><img src="{$image}" style="width=auto; height: 50px;"></td>
@@ -292,6 +297,19 @@
             redirect("index.php?products");
         }
 
+    }
+
+    function show_categories_add_product(){
+        $query = query("SELECT * FROM categories");
+        confirm($query);
+        while($row = fetch_array($query)) {
+            $categories_option = <<<DELIMITER
+                <option value="{$row['cat_id']}">{$row['cat_title']}</option>
+
+            DELIMITER;
+            echo $categories_option;
+        }
+        
     }
 
 
