@@ -66,6 +66,16 @@
                         $flag = 1;
                     }
 
+                    if(isset($_GET['add_user'])){
+                        include(TEMPLATE_BACK . DS ."add_user.php");
+                        $flag = 1;
+                    }
+
+                    if(isset($_GET['delete_user'])){
+                        include(TEMPLATE_BACK . DS ."delete_user.php");
+                        $flag = 1;
+                    }
+
                     if($flag==0){
                         include(TEMPLATE_BACK . DS ."admin_content.php");
                     }

@@ -1,15 +1,22 @@
-
-
+<?php edit_admin_products(); ?>
 
 <div class="col-md-12">
 
 <div class="row">
 <h1 class="page-header">
-   Edit Product
-
+   Add Product
+   
 </h1>
 </div>
-               
+
+<?php 
+
+  if(isset($_GET['id'])){
+    $query = query("SELECT * FROM products WHERE product_id = " . escape_string($_GET['id']));
+    confirm($query);
+    while($row = fetch_array($query)):
+
+?>         
 
 
 <form action="" method="post" enctype="multipart/form-data">
@@ -19,31 +26,21 @@
 
 <div class="form-group">
     <label for="product-title">Product Title </label>
-        <input type="text" name="product_title" class="form-control">
+        <input type="text" name="product_title" class="form-control" value="<?php echo $row['product_title']; ?>">
        
     </div>
 
 
     <div class="form-group">
-           <label for="product-title">Product Description</label>
-      <textarea name="product_description" id="" cols="30" rows="10" class="form-control"></textarea>
+           <label for="product_description">Product Description</label>
+      <textarea name="product_description" id="" cols="30" rows="10" class="form-control"><?php echo $row['product_description']; ?></textarea>
     </div>
 
-
-
-    <div class="form-group row">
-
-      <div class="col-xs-3">
-        <label for="product-price">Product Price</label>
-        <input type="number" name="product_price" class="form-control" size="60">
-      </div>
+    <div class="form-group">
+           <label for="product_short_description">Product Short Description</label>
+      <textarea name="product_short_description" id="" cols="30" rows="3" class="form-control"><?php echo $row['product_short_description']; ?></textarea>
     </div>
 
-
-
-
-    
-    
 
 </div><!--Main Content-->
 
@@ -56,22 +53,24 @@
      
      <div class="form-group">
        <input type="submit" name="draft" class="btn btn-warning btn-lg" value="Draft">
-        <input type="submit" name="publish" class="btn btn-primary btn-lg" value="Publish">
+        <input type="submit" name="update" class="btn btn-primary btn-lg" value="Update">
     </div>
 
 
      <!-- Product Categories-->
-
+     <hr>
     <div class="form-group">
-         <label for="product-title">Product Category</label>
-          <hr>
-        <select name="product_category" id="" class="form-control">
-            <option value="">Select Category</option>
+         <label for="product_category_id">Product Category</label>
+          
+        <select name="product_category_id" id="" class="form-control">
+            <?php show_categories_edit_product($row['product_category_id']); ?>
            
         </select>
 
 
-</div>
+      </div>
+
+      
 
 
 
@@ -81,10 +80,8 @@
 
 
     <div class="form-group">
-      <label for="product-title">Product Brand</label>
-         <select name="product_brand" id="" class="form-control">
-            <option value="">Select Brand</option>
-         </select>
+      <label for="product_quantity">Product Quantity</label>
+         <input type="number" name="product_quantity" class="form-control"  value="<?php echo $row['product_quantity']; ?>">
     </div>
 
 
@@ -92,9 +89,11 @@
 
 
     <div class="form-group">
-          <label for="product-title">Product Keywords</label>
-          <hr>
-        <input type="text" name="product_tags" class="form-control">
+
+        
+          <label for="product_price">Product Price</label>
+          <input type="number" name="product_price" class="form-control"  step="any" value="<?php echo $row['product_price']; ?>">
+        
     </div>
 
     <!-- Product Image -->
@@ -104,6 +103,11 @@
       
     </div>
 
+    <div class="form-input">
+    <img src="<?php echo "../../resources/uploads/" . $row['product_image'] ?>" style="max-height: 120px; width: auto;">
+    </div>
+    <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
+
 
 
 </aside><!--SIDEBAR-->
@@ -112,6 +116,17 @@
     
 </form>
 
+<?php 
+
+    endwhile;
+  } else {
+    redirect("index.php");
+}
 
 
-</div> 
+?>
+
+
+            </div>
+            <!-- /.container-fluid -->
+

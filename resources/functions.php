@@ -310,13 +310,147 @@
         while($row = fetch_array($query)) {
             $categories_option = <<<DELIMITER
                 <option value="{$row['cat_id']}">{$row['cat_title']}</option>
-
             DELIMITER;
             echo $categories_option;
+            
         }
         
     }
 
+    function show_categories_edit_product($id){
+        $query = query("SELECT * FROM categories");
+        confirm($query);
+        while($row = fetch_array($query)) {
+            if(isset($id)){
+                if($row['cat_id'] == $id){
+                    $categories_option = <<<DELIMITER
+                        <option selected="selected" value="{$row['cat_id']}">{$row['cat_title']}</option>
 
+                    DELIMITER;
+                } else {
+                    $categories_option = <<<DELIMITER
+                        <option value="{$row['cat_id']}">{$row['cat_title']}</option>
+
+                    DELIMITER;
+                }
+            echo $categories_option;
+            } else {
+                $categories_option = <<<DELIMITER
+                <option value="{$row['cat_id']}">{$row['cat_title']}</option>
+
+            DELIMITER;
+            echo $categories_option;
+            }
+            
+        }
+        
+    }
+
+    function display_image($picture){
+        return "uploads" . DS . $picture;
+    }
+
+    function edit_admin_products(){
+        if(isset($_POST['update'])){
+            $product_id                 = escape_string($_POST['product_id']);
+            $product_title              = escape_string($_POST['product_title']);
+            $product_category_id        = escape_string($_POST['product_category_id']);
+            $product_price              = escape_string($_POST['product_price']);
+            $product_description        = escape_string($_POST['product_description']);
+            $product_short_description  = escape_string($_POST['product_short_description']);
+            $product_quantity           = escape_string($_POST['product_quantity']);
+            $product_image              = $_FILES['file']['name'];
+            $image_temp_location        = $_FILES['file']['tmp_name'];
+
+            if(empty($product_image)){
+                $get_pic = query("SELECT product_image FROM products WHERE product_id = " . $product_id);
+                confirm($get_pic);
+                $row_pic = fetch_array($get_pic);
+                $product_image = $row_pic['product_image'];
+            }
+
+            move_uploaded_file($image_temp_location, UPLOAD_DIRECTORY . DS . $product_image);
+            
+            $query = query("UPDATE products SET 
+                    product_title          = '{$product_title}',
+                    product_category_id     = {$product_category_id},
+                    product_price           = {$product_price},
+                    product_short_description = '{$product_short_description}',
+                    product_description     = '{$product_description}',
+                    product_quantity        = {$product_quantity},
+                    product_image = '{$product_image}' 
+                    WHERE product_id = {$product_id}");
+            confirm($query);
+            set_message("Product with id {$id} was updated");
+            redirect("index.php?products");
+        }
+
+    }
+
+// +++++++++++++++++++++++++++++++++++++++++++CATEGORIES+++++++++++++++++++++++++++++++++++++++++++
+
+function show_categories_in_admin(){
+    $query = query("SELECT * FROM categories");
+    confirm($query);
+    while($row = fetch_array($query)){
+        $category = <<<DELIMETER
+        <tr>
+            <td>{$row['cat_id']}</td>
+            <td>{$row['cat_title']}</td>
+            <td>
+                    <a class='btn btn-danger' href="../../resources/templates/back/delete_category.php?id={$row['cat_id']}">
+                        <span class="glyphicon glyphicon-remove">
+                    </span>
+                    </a>
+                </td>
+        </tr>
+
+        DELIMETER;
+
+        echo $category;
+    }
+}
+
+function add_category(){
+    if(isset($_POST['add_category'])){
+        $cat_title = escape_string($_POST['cat_title']);
+        if(empty($cat_title) || $cat_title = " "){
+            echo "<p class='bg-danger'>Category name cannot be empty</p>";
+        } else {
+            // echo $cat_title;
+            $query = query("INSERT INTO categories (cat_title) VALUES ('{$cat_title}')");
+            confirm($query);
+            $id = return_id($query);
+            set_message("New Category with id {$id} was added");
+            redirect("index.php?categories");
+        }
+    }
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++ADMIN USERS+++++++++++++++++++++++++++++++++++++++++++++++
+
+function display_users(){
+    $query = query("SELECT * FROM users");
+    confirm($query);
+    while($row = fetch_array($query)){
+        $user = <<<DELIMETER
+        <tr>
+            <td>{$row['user_id']}</td>
+            <td><img class="admin-user-thumbnail user_image" src="placehold.it/62x62" alt=""></td>
+            <td>{$row['username']}</td>
+            <td>{$row['email']}</td>
+            <td>
+                <a class='btn btn-danger' href="../../resources/templates/back/delete_user.php?id={$row['user_id']}">
+                    <span class="glyphicon glyphicon-remove">
+                </span>
+                </a>
+            </td>
+        </tr>
+
+        DELIMETER;
+
+        echo $user;
+    }
+}
 
 ?>
